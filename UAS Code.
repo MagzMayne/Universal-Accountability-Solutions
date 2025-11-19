@@ -1,0 +1,2078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Accountability Solutions - Legal Compliance Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .form-section h2 {
+            color: #1e293b;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .output-section {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 8px;
+            margin-top: 30px;
+            border: 2px solid #cbd5e1;
+        }
+
+        .output-section h3 {
+            color: #1e293b;
+            margin-bottom: 15px;
+        }
+
+        .generated-email {
+            background: white;
+            padding: 20px;
+            border-radius: 6px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            border: 1px solid #cbd5e1;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+        }
+
+        .spinner {
+            border: 4px solid #f1f5f9;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .law-references {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            border-left: 4px solid #10b981;
+        }
+
+        .law-references h4 {
+            color: #065f46;
+            margin-bottom: 10px;
+        }
+
+        .law-item {
+            padding: 10px;
+            background: #f0fdf4;
+            margin-bottom: 8px;
+            border-radius: 4px;
+        }
+
+        .agency-info {
+            background: #eff6ff;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .warning {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+        }
+
+        .warning strong {
+            color: #92400e;
+        }
+
+        .compliance-type-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .compliance-type-card {
+            padding: 15px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .compliance-type-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+
+        .compliance-type-card.selected {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .file-upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 6px;
+            padding: 20px;
+            text-align: center;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload-area:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        #uploadedFiles {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚖️ Universal Accountability Solutions</h1>
+            <p style="font-size: 1.2em; font-weight: 600; margin-top: 10px;">Professional Compliance Notices Generator</p>
+            <p style="font-size: 0.95em; opacity: 0.9;">Legal Compliance with Consciousness Architecture & Pattern Analytics</p>
+        </div>
+
+        <div class="content">
+            <div class="warning">
+                <strong>⚠️ Legal Notice:</strong> This tool is designed to help you file legitimate compliance notices with appropriate authorities. All information must be truthful and accurate. Filing false compliance notices may result in legal consequences.
+            </div>
+
+            <div class="form-section" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-left-color: #10b981;">
+                <h2>📊 Compliance History & Tracking</h2>
+                <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: center; margin-bottom: 15px;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <div style="font-size: 2.5em; font-weight: bold; color: #059669;">
+                            <span id="complianceCount">0</span>
+                        </div>
+                        <div style="color: #065f46; font-weight: 600;">Total Compliance Notices Filed</div>
+                    </div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <button class="btn" id="viewHistoryBtn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); width: 100%;">
+                            📋 View Compliance History
+                        </button>
+                    </div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <button class="btn btn-secondary" id="autofillBtn" style="width: 100%;">
+                            ⚡ Auto-Fill from Last Notice
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LEGAL DATABASE STATUS BANNER -->
+            <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border: 3px solid #10b981; border-radius: 12px; padding: 20px; margin-bottom: 25px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);">
+                <div style="display: flex; align-items: center; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 10px;">
+                    <h3 style="margin: 0; color: #065f46;">✅ Legal Database Loaded</h3>
+                </div>
+                <p style="text-align: center; color: #065f46; margin: 10px 0; font-size: 1.05em;">
+                    <strong>8 Legal Categories Available:</strong>
+                </p>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 15px;">
+                    <span style="background: white; padding: 8px 15px; border-radius: 20px; color: #065f46; font-weight: 600; font-size: 0.9em; border: 2px solid #10b981;">📋 Consumer Protection</span>
+                    <span style="background: white; padding: 8px 15px; border-radius: 20px; color: #065f46; font-weight: 600; font-size: 0.9em; border: 2px solid #10b981;">💼 Employment/Labor</span>
+                    <span style="background: white; padding: 8px 15px; border-radius: 20px; color: #065f46; font-weight: 600; font-size: 0.9em; border: 2px solid #10b981;">⚖️ Discrimination</span>
+                    <span style="background: white; padding: 8px 15px; border-radius: 20px; color: #065f46; font-weight: 600; font-size: 0.9em; border: 2px solid #10b981;">🏠 Housing/Landlord</span>
+                    <span style="background: white; padding: 8px 15px; border-radius: 20px; color: #065f46; font-weight: 600; font-size: 0.9em; border: 2px solid #10b981;">💰 Financial Services</span>
+                    <span style="background: white; padding: 8px 15px; border-radius: 20px; color: #065f46; font-weight: 600; font-size: 0.9em; border: 2px solid #10b981;">🏥 Healthcare</span>
+                    <span style="background: white; padding: 8px 15px; border-radius: 20px; color: #065f46; font-weight: 600; font-size: 0.9em; border: 2px solid #10b981;">🌲 Environmental</span>
+                    <span style="background: white; padding: 8px 15px; border-radius: 20px; color: #065f46; font-weight: 600; font-size: 0.9em; border: 2px solid #10b981;">✊ Civil Rights</span>
+                </div>
+                <p style="text-align: center; color: #065f46; margin: 15px 0 0 0; font-size: 0.95em;">
+                    Each category includes Federal laws, State statutes, and relevant regulations
+                </p>
+            </div>
+
+            <div class="form-section">
+                <h2>1. Select Compliance Type</h2>
+                <div class="compliance-type-grid" id="complianceTypes"></div>
+            </div>
+
+            <div class="form-section">
+                <h2>2. Your Information</h2>
+                <div class="form-group">
+                    <label>Your Full Name *</label>
+                    <input type="text" id="yourName" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label>Your Email (Contact) *</label>
+                    <input type="email" id="yourEmail" placeholder="john.doe@email.com" required>
+                    <small style="color: #64748b; display: block; margin-top: 5px;">This is your primary contact email</small>
+                </div>
+                <div class="form-group">
+                    <label>Reply To Email (Optional)</label>
+                    <input type="email" id="replyToEmail" placeholder="legal@yourdomain.com">
+                    <small style="color: #64748b; display: block; margin-top: 5px;">If different from your contact email - responses will be sent here</small>
+                </div>
+                <div class="form-group">
+                    <label>Your Phone</label>
+                    <input type="tel" id="yourPhone" placeholder="(555) 123-4567">
+                </div>
+                <div class="form-group">
+                    <label>Your State *</label>
+                    <input type="text" id="state" placeholder="California" required>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>3. Entity/Party You're Complaining About</h2>
+                <div class="form-group">
+                    <label>Entity Name *</label>
+                    <input type="text" id="entityName" placeholder="ABC Corporation" required>
+                </div>
+                <div class="form-group">
+                    <label>Entity Type</label>
+                    <select id="entityType">
+                        <option value="">Select type...</option>
+                        <option value="corporation">Corporation</option>
+                        <option value="llc">LLC</option>
+                        <option value="individual">Individual</option>
+                        <option value="partnership">Partnership</option>
+                        <option value="government">Government Agency</option>
+                        <option value="nonprofit">Nonprofit</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>4. Private Businesses/Corporations (Optional)</h2>
+                <p style="color: #64748b; margin-bottom: 15px;">
+                    <strong>Fill this out if:</strong> You're also sending this compliance notice directly to a private business or corporation (in addition to government agencies), or if you're only filing with the business itself.
+                </p>
+                <div class="form-group">
+                    <label>Business/Corporation Name</label>
+                    <input type="text" id="businessName" placeholder="e.g., Amazon, Walmart, Apple, etc.">
+                </div>
+                <div class="form-group">
+                    <label>Specific Location/Branch</label>
+                    <input type="text" id="businessLocation" placeholder="e.g., Denver Downtown Store, Austin Branch #342, Store #1234">
+                    <small style="color: #64748b; display: block; margin-top: 5px;">
+                        If applicable, specify which store, branch, or location this compliance notice involves
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label>Contact Name(s)</label>
+                    <textarea id="contactNames" placeholder="Names of specific individuals you dealt with (e.g., Manager: John Smith, Sales Rep: Jane Doe)" style="min-height: 80px;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Customer Service Contact</label>
+                    <input type="text" id="customerService" placeholder="Phone, email, or online portal for customer service">
+                </div>
+                <div class="form-group">
+                    <label>Department (if known)</label>
+                    <input type="text" id="businessDept" placeholder="e.g., Customer Service, Legal, Executive Office">
+                </div>
+                <div class="form-group">
+                    <label>Business Address (if known)</label>
+                    <textarea id="businessAddress" placeholder="Street address, city, state, ZIP" style="min-height: 80px;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Business Email (if known)</label>
+                    <input type="email" id="businessEmail" placeholder="complaints@company.com">
+                </div>
+                <div class="form-group">
+                    <label>Account/Order/Reference Number</label>
+                    <input type="text" id="referenceNumber" placeholder="Any relevant account, order, or case number">
+                </div>
+                <div class="form-group">
+                    <label>CC: Managers/Supervisors</label>
+                    <textarea id="ccManagers" placeholder="List managers, supervisors, or district managers to copy on this compliance notice (one per line)
+
+Example:
+- District Manager: Robert Johnson
+- Store Manager: Sarah Williams
+- Regional Director" style="min-height: 100px;"></textarea>
+                    <small style="color: #64748b; display: block; margin-top: 5px;">
+                        Including management increases accountability and likelihood of resolution
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label>Corporate Office Contacts</label>
+                    <textarea id="corporateOffices" placeholder="List corporate headquarters, executive offices, or corporate compliance notice departments to copy
+
+Example:
+- Corporate Headquarters, 123 Main St, Corporate City, ST 12345
+- Office of the CEO
+- Corporate Compliance Department
+- corporatecomplaints@company.com" style="min-height: 100px;"></textarea>
+                    <small style="color: #64748b; display: block; margin-top: 5px;">
+                        Corporate offices often expedite resolution when made aware of local issues
+                    </small>
+                </div>
+            </div>
+
+            <div class="form-section" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left-color: #d97706;">
+                <h2>⚖️ Law Enforcement, Judge, Court Actor (Optional)</h2>
+                <p style="color: #92400e; margin-bottom: 15px;">
+                    <strong>Fill this out if:</strong> You're filing a compliance notice or formal notice related to law enforcement misconduct, judicial issues, or court-related matters.
+                </p>
+                <div class="form-group">
+                    <label>Entity Type</label>
+                    <select id="legalEntityType">
+                        <option value="">Select entity type...</option>
+                        <option value="police">Police Department</option>
+                        <option value="sheriff">Sheriff's Office</option>
+                        <option value="judge">Judge</option>
+                        <option value="court">Court/Judicial System</option>
+                        <option value="prosecutor">Prosecutor/District Attorney</option>
+                        <option value="corrections">Corrections/Prison</option>
+                        <option value="other_law">Other Law Enforcement</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Agency/Court Name</label>
+                    <input type="text" id="legalEntityName" placeholder="e.g., Denver Police Department, 5th District Court">
+                </div>
+                <div class="form-group">
+                    <label>Badge Number / Case Number / Docket Number</label>
+                    <input type="text" id="badgeOrCaseNumber" placeholder="Badge #, Case #, Docket #, or other identifier">
+                </div>
+                <div class="form-group">
+                    <label>Officer/Judge Name (if applicable)</label>
+                    <input type="text" id="officialName" placeholder="Name of officer, judge, or official involved">
+                </div>
+                <div class="form-group">
+                    <label>Department/Division</label>
+                    <input type="text" id="legalDepartment" placeholder="e.g., Internal Affairs, Criminal Division">
+                </div>
+                <div class="form-group">
+                    <label>Agency Address</label>
+                    <textarea id="legalAddress" placeholder="Full address of agency or court" style="min-height: 80px;"></textarea>
+                </div>
+            </div>
+
+            <div class="form-section" style="background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%); border-left-color: #8b5cf6;">
+                <h2>🧠 Architecture of Consciousness & Pattern Theory Analytics</h2>
+                <p style="color: #5b21b6; margin-bottom: 15px;">
+                    <strong>Systematic Analysis Framework:</strong> Fill these out manually OR click "Auto-Generate Pattern Analysis" to have AI analyze your description and automatically generate sophisticated pattern recognition.
+                </p>
+                
+                <div style="margin-bottom: 20px;">
+                    <button type="button" class="btn" id="autoGeneratePatterns" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); width: 100%;">
+                        🤖 Auto-Generate Pattern Analysis from Description
+                    </button>
+                    <small style="color: #5b21b6; display: block; margin-top: 10px; text-align: center;">
+                        AI will analyze your compliance description and automatically fill in pattern recognition, consciousness framework, and analytical summary
+                    </small>
+                </div>
+                
+                <div class="form-group">
+                    <label>Pattern Recognition: Identify Recurring Issues (Optional - AI can generate)</label>
+                    <textarea id="patternAnalysis" placeholder="Describe any patterns you've observed:
+- Is this an isolated incident or part of a pattern?
+- Have similar violations occurred before?
+- Are there systemic issues at play?
+- What trends have you noticed?
+
+Example: 'This is the third time in 6 months that... The pattern suggests a systemic failure to...'
+
+OR click 'Auto-Generate' button above to have AI analyze this for you.
+" style="min-height: 120px;"></textarea>
+                    <small style="color: #5b21b6; display: block; margin-top: 5px;">
+                        🔍 Pattern recognition strengthens your case by showing systematic violations rather than isolated incidents
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label>Consciousness Framework: Document Your Awareness (Optional - AI can generate)</label>
+                    <textarea id="consciousnessFramework" placeholder="Demonstrate your awareness and intentional actions:
+- When did you first become aware of the issue?
+- What steps did you take to address it?
+- What documentation have you maintained?
+- How have you attempted resolution?
+
+Example: 'I became aware on [date] and immediately documented... I attempted to resolve through [channels]... I maintained records of...'
+
+OR click 'Auto-Generate' button above to have AI create this for you.
+" style="min-height: 120px;"></textarea>
+                    <small style="color: #5b21b6; display: block; margin-top: 5px;">
+                        💡 Shows you acted with awareness, good faith, and proper procedure
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label>Impact Analysis: Scope and Consequences</label>
+                    <select id="impactScope">
+                        <option value="">Select impact scope...</option>
+                        <option value="individual">Individual Impact Only</option>
+                        <option value="multiple">Affects Multiple People</option>
+                        <option value="community">Community-Wide Impact</option>
+                        <option value="systemic">Systemic/Widespread Impact</option>
+                        <option value="public_safety">Public Safety Concern</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Temporal Pattern: Timeline and Frequency</label>
+                    <select id="temporalPattern">
+                        <option value="">Select frequency...</option>
+                        <option value="single">Single Incident</option>
+                        <option value="occasional">Occasional (2-3 times)</option>
+                        <option value="frequent">Frequent (4+ times)</option>
+                        <option value="ongoing">Ongoing/Continuous</option>
+                        <option value="escalating">Escalating Pattern</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Prior Resolution Attempts</label>
+                    <textarea id="priorAttempts" placeholder="List all attempts you've made to resolve this issue:
+- Date: Action taken
+- Date: Who you contacted
+- Date: Response received
+
+Example:
+- 01/15/2024: Contacted customer service, ticket #12345
+- 01/20/2024: Escalated to manager, no response
+- 02/01/2024: Sent written compliance notice, received generic response
+" style="min-height: 100px;"></textarea>
+                    <small style="color: #5b21b6; display: block; margin-top: 5px;">
+                        📋 Shows good faith efforts and exhaustion of remedies
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label>Analytical Summary: Core Pattern Identified (Optional - AI can generate)</label>
+                    <textarea id="analyticalSummary" placeholder="Summarize the core pattern or systemic issue in 2-3 sentences:
+
+Example: 'The recurring pattern indicates a systemic failure in training and oversight. Despite multiple reports, the same procedural violations continue, suggesting the issue is structural rather than individual.'
+
+OR click 'Auto-Generate' button above to have AI create this for you.
+" style="min-height: 80px;"></textarea>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>6. Compliance Details</h2>
+                <div class="form-group">
+                    <label>Date of Incident *</label>
+                    <input type="date" id="incidentDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Detailed Description of Compliance Issue *</label>
+                    <textarea id="description" placeholder="Provide a detailed, factual description of what occurred. Include specific dates, times, locations, and any relevant circumstances. Be objective and stick to the facts." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Evidence You Have</label>
+                    <textarea id="evidence" placeholder="List any evidence you have: emails, receipts, photographs, witness names, documentation, contracts, etc."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Upload Evidence Files (Photos, Documents, etc.)</label>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
+                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('fileUpload').click()">
+                            📎 Upload Files
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('cameraInput').click()">
+                            📷 Take Photo
+                        </button>
+                    </div>
+                    <input type="file" id="fileUpload" multiple accept="image/*,.pdf,.doc,.docx" style="display: none;">
+                    <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;">
+                    <div id="uploadedFiles" style="margin-top: 10px;"></div>
+                </div>
+                <div class="form-group">
+                    <label>Desired Outcome/Remedy *</label>
+                    <textarea id="desiredOutcome" placeholder="What resolution are you seeking? (e.g., refund, investigation, cease and desist, damages, corrective action, etc.)" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Send Copy To (CC)</label>
+                    <textarea id="sendCopyTo" placeholder="List names, organizations, or email addresses of parties who should receive a copy of this compliance notice. Separate each with a new line.
+
+Example:
+- State Attorney General
+- Better Business Bureau
+- Consumer Financial Protection Bureau
+- attorney@lawfirm.com" style="min-height: 100px;"></textarea>
+                    <small style="color: #64748b; display: block; margin-top: 5px;">
+                        ℹ️ Listing CC recipients shows all parties that this compliance notice is being shared with, which can increase accountability and pressure for resolution.
+                    </small>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 15px;">
+                <button class="btn btn-secondary" id="testConnectionBtn" style="flex: 0.5; min-width: 150px; font-size: 0.9em;">
+                    🔌 Test AI Connection
+                </button>
+                <button class="btn" id="previewBtn" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); flex: 1; min-width: 200px;">
+                    👁️ Preview Compliance Details & Laws
+                </button>
+            </div>
+            
+            <!-- MAIN GENERATE BUTTON - HIGHLY VISIBLE -->
+            <div style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); padding: 25px; border-radius: 12px; margin: 20px 0; box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4); border: 3px solid #60a5fa;">
+                <button class="btn" id="generateBtn" style="width: 100%; font-size: 1.4em; padding: 22px; background: white; color: #1e40af; font-weight: bold; box-shadow: 0 6px 16px rgba(0,0,0,0.3); border: none; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                    🔍 GENERATE COMPLIANCE NOTICE & FIND LAWS
+                </button>
+                <div style="text-align: center; color: white; margin: 15px 0 0 0;">
+                    <p style="font-size: 1em; margin: 5px 0;">
+                        ✅ <strong>8 Legal Categories Loaded</strong> with Federal & State Laws
+                    </p>
+                    <p style="font-size: 0.9em; margin: 5px 0; opacity: 0.9;">
+                        🤖 AI Pattern Analysis | 📄 PDF Download | 📋 Multiple Agency Notices
+                    </p>
+                </div>
+            </div>
+            <div id="statusMessage" style="margin-top: 15px; padding: 15px; border-radius: 8px; display: none;"></div>
+
+            <div id="loadingSection" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Analyzing patterns, researching laws, and generating compliance notice...</p>
+            </div>
+
+            <div id="agencySection" class="output-section" style="display: none;">
+                <div class="agency-info">
+                    <h4>📋 Recommended Filing Agencies</h4>
+                    <div id="agencyContent"></div>
+                </div>
+            </div>
+
+            <div id="referenceSection" class="output-section" style="display: none;">
+                <div class="agency-info" style="background: #f0fdf4; border-left-color: #10b981;">
+                    <h4>📚 For Your Reference - Additional Agencies & Resources</h4>
+                    <p style="color: #065f46; margin-bottom: 15px;">
+                        These additional agencies and resources may also be relevant to your compliance notice:
+                    </p>
+                    <div id="referenceContent"></div>
+                </div>
+            </div>
+
+            <div id="lawSection" class="output-section" style="display: none;">
+                <div class="law-references">
+                    <h4>📜 Relevant Legal References</h4>
+                    <div id="lawContent"></div>
+                </div>
+            </div>
+
+            <div id="emailSection" class="output-section" style="display: none;">
+                <h3>📧 Generated Formal Compliance Notices</h3>
+                <p style="color: #64748b; margin-bottom: 20px;">
+                    We've generated separate, customized compliance notices for each relevant entity. Each notice is tailored with specific legal language, pattern analysis, and consciousness framework appropriate for that recipient.
+                </p>
+                <div id="generatedEmailsContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Compliance Notice History Modal -->
+    <div id="historyModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; overflow-y: auto; padding: 20px;">
+        <div style="max-width: 1000px; margin: 40px auto; background: white; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
+            <div style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; border-radius: 12px 12px 0 0;">
+                <h2 style="margin: 0;">📋 Compliance Notice History</h2>
+                <button id="closeHistoryBtn" style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 1.5em; cursor: pointer; padding: 5px 15px; border-radius: 6px;">✕</button>
+            </div>
+            <div id="historyContent" style="padding: 30px; max-height: 70vh; overflow-y: auto;">
+                <!-- History will be inserted here -->
+            </div>
+            <div style="padding: 20px; border-top: 2px solid #e2e8f0; background: #f8fafc;">
+                <button id="clearHistoryBtn" class="btn" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+                    🗑️ Clear All History
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /*
+        ═══════════════════════════════════════════════════════════════════════════════
+        UNIVERSAL ACCOUNTABILITY SOLUTIONS - LEGAL COMPLIANCE GENERATOR
+        ═══════════════════════════════════════════════════════════════════════════════
+        
+        📚 LEGAL DATABASE - COMPREHENSIVE LAW LIBRARY LOADED:
+        
+        1️⃣ CONSUMER PROTECTION (4 laws)
+           • Federal Trade Commission Act (15 U.S.C. § 45)
+           • Consumer Protection Acts (State-specific)
+           • Magnuson-Moss Warranty Act (15 U.S.C. § 2301)
+           • Truth in Lending Act (15 U.S.C. § 1601)
+        
+        2️⃣ EMPLOYMENT/LABOR (5 laws)
+           • Title VII Civil Rights Act (42 U.S.C. § 2000e)
+           • Fair Labor Standards Act (29 U.S.C. § 201)
+           • Family and Medical Leave Act (29 U.S.C. § 2601)
+           • Occupational Safety and Health Act (29 U.S.C. § 651)
+           • State Labor Code
+        
+        3️⃣ DISCRIMINATION (6 laws)
+           • Title VII Civil Rights Act (42 U.S.C. § 2000e)
+           • Fair Housing Act (42 U.S.C. § 3601)
+           • Americans with Disabilities Act (42 U.S.C. § 12101)
+           • Age Discrimination in Employment Act (29 U.S.C. § 621)
+           • Equal Credit Opportunity Act (15 U.S.C. § 1691)
+           • State Human Rights Laws
+        
+        4️⃣ HOUSING/LANDLORD (5 laws)
+           • Fair Housing Act (42 U.S.C. § 3601)
+           • State Landlord-Tenant Act
+           • Local Housing Codes
+           • Warranty of Habitability
+           • Security Deposit Laws
+        
+        5️⃣ FINANCIAL SERVICES (6 laws)
+           • Consumer Financial Protection Act (12 U.S.C. § 5481)
+           • Truth in Lending Act (15 U.S.C. § 1601)
+           • Fair Credit Reporting Act (15 U.S.C. § 1681)
+           • Fair Debt Collection Practices Act (15 U.S.C. § 1692)
+           • Electronic Fund Transfer Act (15 U.S.C. § 1693)
+           • State Banking Laws
+        
+        6️⃣ HEALTHCARE (6 laws)
+           • Patient Protection and Affordable Care Act (42 U.S.C. § 18001)
+           • HIPAA (42 U.S.C. § 1320d)
+           • Emergency Medical Treatment and Labor Act (42 U.S.C. § 1395dd)
+           • State Medical Practice Act
+           • Local Health Department Regulations
+           • Medicare/Medicaid Regulations
+        
+        7️⃣ ENVIRONMENTAL (6 laws)
+           • Clean Air Act (42 U.S.C. § 7401)
+           • Clean Water Act (33 U.S.C. § 1251)
+           • Resource Conservation and Recovery Act (42 U.S.C. § 6901)
+           • Comprehensive Environmental Response Act (42 U.S.C. § 9601)
+           • National Environmental Policy Act (42 U.S.C. § 4321)
+           • State Environmental Protection Laws
+        
+        8️⃣ CIVIL RIGHTS (7 laws)
+           • Civil Rights Act of 1964 (42 U.S.C. § 2000a)
+           • 42 U.S.C. § 1983 (Civil action for deprivation of rights)
+           • Americans with Disabilities Act (42 U.S.C. § 12101)
+           • Voting Rights Act (52 U.S.C. § 10301)
+           • First Amendment (Freedom of speech, religion, assembly)
+           • Fourteenth Amendment (Equal protection and due process)
+           • State Civil Rights Laws
+        
+        ═══════════════════════════════════════════════════════════════════════════════
+        TOTAL: 45+ Federal, State, and Local Laws Loaded and Ready
+        ═══════════════════════════════════════════════════════════════════════════════
+        */
+        
+        const complianceTypes = [
+            { value: 'consumer', label: 'Consumer Protection', agencies: ['FTC', 'State AG', 'BBB', 'Consumer Financial Protection Bureau'] },
+            { value: 'employment', label: 'Employment/Labor', agencies: ['EEOC', 'DOL', 'State Labor Board', 'NLRB'] },
+            { value: 'discrimination', label: 'Discrimination', agencies: ['EEOC', 'HUD', 'DOJ Civil Rights', 'State Human Rights Commission'] },
+            { value: 'housing', label: 'Housing/Landlord', agencies: ['HUD', 'State Housing Authority', 'Local Housing Agency'] },
+            { value: 'financial', label: 'Financial Services', agencies: ['CFPB', 'SEC', 'State Banking Dept', 'FDIC'] },
+            { value: 'healthcare', label: 'Healthcare', agencies: ['HHS', 'State Health Dept', 'Local Health Dept', 'Medicare/Medicaid', 'State Medical Board'] },
+            { value: 'environmental', label: 'Environmental', agencies: ['EPA', 'State EPA', 'Local Environmental Agency'] },
+            { value: 'civil_rights', label: 'Civil Rights Violation', agencies: ['DOJ Civil Rights', 'State AG', 'ACLU', 'State Human Rights'] }
+        ];
+
+        // Legal language templates for each compliance notice type
+        const legalLanguageTemplates = {
+            consumer: {
+                opening: "This compliance notice is filed pursuant to the Federal Trade Commission Act (15 U.S.C. § 45) and applicable state consumer protection statutes.",
+                keyLaws: [
+                    "Federal Trade Commission Act (15 U.S.C. § 45) - Prohibits unfair or deceptive acts or practices",
+                    "Consumer Protection Acts - State-specific consumer protection laws",
+                    "Magnuson-Moss Warranty Act (15 U.S.C. § 2301) - Federal warranty protection",
+                    "Truth in Lending Act (15 U.S.C. § 1601) - Consumer credit disclosure"
+                ],
+                remedy: "refund, corrective advertising, civil penalties, and injunctive relief"
+            },
+            employment: {
+                opening: "This compliance notice is filed pursuant to Title VII of the Civil Rights Act of 1964, the Fair Labor Standards Act, and applicable state labor laws.",
+                keyLaws: [
+                    "Title VII of the Civil Rights Act (42 U.S.C. § 2000e) - Prohibits employment discrimination",
+                    "Fair Labor Standards Act (29 U.S.C. § 201) - Wage and hour protections",
+                    "Family and Medical Leave Act (29 U.S.C. § 2601) - Job-protected leave",
+                    "Occupational Safety and Health Act (29 U.S.C. § 651) - Workplace safety",
+                    "State Labor Code - State-specific employment protections"
+                ],
+                remedy: "back pay, reinstatement, compensatory damages, punitive damages, and injunctive relief"
+            },
+            discrimination: {
+                opening: "This compliance notice is filed pursuant to Title VII of the Civil Rights Act of 1964, the Fair Housing Act, the Americans with Disabilities Act, and applicable state anti-discrimination laws.",
+                keyLaws: [
+                    "Title VII of the Civil Rights Act (42 U.S.C. § 2000e) - Employment discrimination",
+                    "Fair Housing Act (42 U.S.C. § 3601) - Housing discrimination",
+                    "Americans with Disabilities Act (42 U.S.C. § 12101) - Disability discrimination",
+                    "Age Discrimination in Employment Act (29 U.S.C. § 621) - Age discrimination",
+                    "Equal Credit Opportunity Act (15 U.S.C. § 1691) - Credit discrimination",
+                    "State Human Rights Laws - State-specific protections"
+                ],
+                remedy: "compensatory damages, punitive damages, injunctive relief, policy changes, and training"
+            },
+            housing: {
+                opening: "This compliance notice is filed pursuant to the Fair Housing Act (42 U.S.C. § 3601 et seq.) and applicable state and local housing regulations.",
+                keyLaws: [
+                    "Fair Housing Act (42 U.S.C. § 3601) - Prohibits housing discrimination",
+                    "State Landlord-Tenant Act - State rental protections",
+                    "Local Housing Codes - Municipal housing standards",
+                    "Warranty of Habitability - Implied warranty in residential leases",
+                    "Security Deposit Laws - State deposit regulations"
+                ],
+                remedy: "damages, rent abatement, repairs, injunctive relief, and relocation assistance"
+            },
+            financial: {
+                opening: "This compliance notice is filed pursuant to the Consumer Financial Protection Act, Truth in Lending Act, Fair Credit Reporting Act, and applicable state financial services regulations.",
+                keyLaws: [
+                    "Consumer Financial Protection Act (12 U.S.C. § 5481) - Consumer financial protection",
+                    "Truth in Lending Act (15 U.S.C. § 1601) - Credit disclosure requirements",
+                    "Fair Credit Reporting Act (15 U.S.C. § 1681) - Credit reporting accuracy",
+                    "Fair Debt Collection Practices Act (15 U.S.C. § 1692) - Debt collection regulation",
+                    "Electronic Fund Transfer Act (15 U.S.C. § 1693) - Electronic payment protections",
+                    "State Banking Laws - State financial regulations"
+                ],
+                remedy: "restitution, statutory damages, corrective action, and civil penalties"
+            },
+            healthcare: {
+                opening: "This compliance notice is filed pursuant to the Patient Protection and Affordable Care Act, HIPAA, state health regulations, and applicable local health codes.",
+                keyLaws: [
+                    "Patient Protection and Affordable Care Act (42 U.S.C. § 18001) - Healthcare access and quality",
+                    "Health Insurance Portability and Accountability Act (42 U.S.C. § 1320d) - Privacy protections",
+                    "Emergency Medical Treatment and Labor Act (42 U.S.C. § 1395dd) - Emergency care requirements",
+                    "State Medical Practice Act - State healthcare regulations",
+                    "Local Health Department Regulations - Municipal health codes",
+                    "Medicare/Medicaid Regulations - Federal healthcare program rules"
+                ],
+                remedy: "corrective medical care, compensation for damages, policy changes, and sanctions"
+            },
+            environmental: {
+                opening: "This compliance notice is filed pursuant to the Clean Air Act, Clean Water Act, Resource Conservation and Recovery Act, and applicable state environmental regulations.",
+                keyLaws: [
+                    "Clean Air Act (42 U.S.C. § 7401) - Air quality standards",
+                    "Clean Water Act (33 U.S.C. § 1251) - Water pollution control",
+                    "Resource Conservation and Recovery Act (42 U.S.C. § 6901) - Waste management",
+                    "Comprehensive Environmental Response Act (42 U.S.C. § 9601) - Hazardous waste cleanup",
+                    "National Environmental Policy Act (42 U.S.C. § 4321) - Environmental impact assessment",
+                    "State Environmental Protection Laws - State environmental regulations"
+                ],
+                remedy: "abatement of pollution, cleanup, civil penalties, and injunctive relief"
+            },
+            civil_rights: {
+                opening: "This compliance notice is filed pursuant to the Civil Rights Act of 1964, the Civil Rights Act of 1991, 42 U.S.C. § 1983, and applicable state civil rights statutes.",
+                keyLaws: [
+                    "Civil Rights Act of 1964 (42 U.S.C. § 2000a) - Public accommodations and civil rights",
+                    "42 U.S.C. § 1983 - Civil action for deprivation of rights",
+                    "Americans with Disabilities Act (42 U.S.C. § 12101) - Disability rights",
+                    "Voting Rights Act (52 U.S.C. § 10301) - Voting protections",
+                    "First Amendment - Freedom of speech, religion, assembly",
+                    "Fourteenth Amendment - Equal protection and due process",
+                    "State Civil Rights Laws - State constitutional protections"
+                ],
+                remedy: "declaratory relief, injunctive relief, compensatory damages, punitive damages, and attorney's fees"
+            }
+        };
+
+        let selectedComplianceType = '';
+        let lawReferences = [];
+        let agencyInfo = null;
+        let generatedCompliance Notice = '';
+        let uploadedFiles = [];
+
+        // LocalStorage Management
+        function saveCompliance(complianceData) {
+            const compliance notices = getComplianceHistory();
+            compliances.push({
+                ...complianceData,
+                id: Date.now(),
+                timestamp: new Date().toISOString(),
+                dateCreated: new Date().toLocaleDateString()
+            });
+            localStorage.setItem('complianceHistory', JSON.stringify(compliances));
+            updateComplianceCount();
+        }
+
+        function getComplianceHistory() {
+            const history = localStorage.getItem('complianceHistory');
+            return history ? JSON.parse(history) : [];
+        }
+
+        function updateComplianceCount() {
+            const count = getComplianceHistory().length;
+            document.getElementById('complianceCount').textContent = count;
+        }
+
+        function deleteCompliance(id) {
+            const compliance notices = getComplianceHistory();
+            const filtered = compliances.filter(c => c.id !== id);
+            localStorage.setItem('complianceHistory', JSON.stringify(filtered));
+            updateComplianceCount();
+            displayHistory();
+        }
+
+        function clearAllHistory() {
+            if (confirm('Are you sure you want to delete ALL compliance notice history? This cannot be undone.')) {
+                localStorage.removeItem('complianceHistory');
+                updateComplianceCount();
+                displayHistory();
+            }
+        }
+
+        function autofillFromLast() {
+            const history = getComplianceHistory();
+            if (history.length === 0) {
+                alert('No previous compliance notices found!');
+                return;
+            }
+            
+            const lastCompliance Notice = history[history.length - 1];
+            
+            // Fill in the form fields
+            document.getElementById('yourName').value = lastCompliance.yourName || '';
+            document.getElementById('yourEmail').value = lastCompliance.yourEmail || '';
+            document.getElementById('replyToEmail').value = lastCompliance.replyToEmail || '';
+            document.getElementById('yourPhone').value = lastCompliance.yourPhone || '';
+            document.getElementById('state').value = lastCompliance.state || '';
+            
+            // Select compliance notice type
+            if (lastCompliance.complianceType) {
+                selectedComplianceType = lastCompliance.complianceType;
+                document.querySelectorAll('.compliance-type-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                const matchingCard = Array.from(document.querySelectorAll('.compliance-type-card')).find((card, idx) => {
+                    return complianceTypes[idx].value === lastCompliance.complianceType;
+                });
+                if (matchingCard) matchingCard.classList.add('selected');
+            }
+            
+            alert('✅ Form auto-filled with your last compliance notice information!');
+        }
+
+        function displayHistory() {
+            const history = getComplianceHistory();
+            const container = document.getElementById('historyContent');
+            
+            if (history.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #64748b; padding: 40px;">No compliance notices filed yet. Your compliance history will appear here.</p>';
+                return;
+            }
+            
+            container.innerHTML = history.reverse().map(compliance => `
+                <div style="border: 2px solid #e2e8f0; border-radius: 8px; padding: 20px; margin-bottom: 20px; background: #f8fafc;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                        <div>
+                            <h3 style="margin: 0 0 5px 0; color: #1e293b;">Compliance Notice #${compliance.id}</h3>
+                            <small style="color: #64748b;">Filed: ${compliance.dateCreated}</small>
+                        </div>
+                        <button onclick="deleteCompliance(${compliance.id})" style="background: #ef4444; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 0.9em;">
+                            Delete
+                        </button>
+                    </div>
+                    <div style="background: white; padding: 15px; border-radius: 6px; margin-top: 10px;">
+                        <p><strong>Type:</strong> ${compliance.complianceTypeLabel || compliance.complianceType}</p>
+                        <p><strong>Against:</strong> ${compliance.entityName}</p>
+                        <p><strong>State:</strong> ${compliance.state}</p>
+                        <p><strong>Date of Incident:</strong> ${compliance.incidentDate}</p>
+                        <p><strong>Description:</strong> ${compliance.description.substring(0, 200)}${compliance.description.length > 200 ? '...' : ''}</p>
+                        ${compliance.businessName ? `<p><strong>Business/Corporation:</strong> ${compliance.businessName}</p>` : ''}
+                        ${compliance.patternAnalysis ? `<p><strong>Pattern Analysis:</strong> ${compliance.patternAnalysis.substring(0, 150)}...</p>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Event Listeners for History
+        document.getElementById('viewHistoryBtn').onclick = () => {
+            displayHistory();
+            document.getElementById('historyModal').style.display = 'block';
+        };
+
+        document.getElementById('closeHistoryBtn').onclick = () => {
+            document.getElementById('historyModal').style.display = 'none';
+        };
+
+        document.getElementById('clearHistoryBtn').onclick = clearAllHistory;
+        document.getElementById('autofillBtn').onclick = autofillFromLast;
+
+        // Close modal when clicking outside
+        document.getElementById('historyModal').onclick = (e) => {
+            if (e.target.id === 'historyModal') {
+                document.getElementById('historyModal').style.display = 'none';
+            }
+        };
+
+        // Initialize count on page load
+        updateComplianceCount();
+
+        // Auto-generate pattern analysis
+        document.getElementById('autoGeneratePatterns').addEventListener('click', async function() {
+            const description = document.getElementById('description').value;
+            const incidentDate = document.getElementById('incidentDate').value;
+            const priorAttempts = document.getElementById('priorAttempts').value;
+            const selectedType = complianceTypes.find(t => t.value === selectedComplianceType);
+
+            if (!description) {
+                alert('⚠️ Please fill in the "Detailed Description of Compliance Issue" field first. The AI needs this information to generate pattern analysis.');
+                return;
+            }
+
+            if (!selectedComplianceType) {
+                alert('⚠️ Please select a Compliance Type first.');
+                return;
+            }
+
+            // Show loading state
+            const button = document.getElementById('autoGeneratePatterns');
+            const originalText = button.innerHTML;
+            button.innerHTML = '🔄 Analyzing Patterns...';
+            button.disabled = true;
+
+            try {
+                const analysisPrompt = `You are a legal analyst specializing in pattern recognition and compliance analysis. Analyze the following compliance issue and generate sophisticated pattern analysis:
+
+COMPLIANCE TYPE: ${selectedType.label}
+INCIDENT DATE: ${incidentDate || 'Not specified'}
+DESCRIPTION: ${description}
+${priorAttempts ? `PRIOR RESOLUTION ATTEMPTS: ${priorAttempts}` : ''}
+
+Generate a comprehensive pattern analysis that includes:
+
+1. PATTERN RECOGNITION: Identify whether this appears to be an isolated incident or part of a systematic pattern. Look for indicators of recurring issues, systemic failures, or ongoing violations. Be specific about what patterns you observe.
+
+2. CONSCIOUSNESS FRAMEWORK: Construct a narrative that demonstrates the complainant's awareness and good faith efforts. Include when awareness likely occurred, steps that appear to have been taken, and how proper procedure was followed.
+
+3. IMPACT ANALYSIS RECOMMENDATION: Based on the description, recommend whether this appears to be: individual, multiple people, community-wide, systemic, or public safety concern.
+
+4. TEMPORAL PATTERN RECOMMENDATION: Based on the description and prior attempts, recommend whether this appears to be: single incident, occasional, frequent, ongoing, or escalating.
+
+5. ANALYTICAL SUMMARY: Provide a 2-3 sentence professional summary identifying the core pattern and whether this indicates structural vs. individual issues.
+
+CRITICAL: Your analysis should be sophisticated, legally-minded, and demonstrate analytical rigor. Frame everything in terms of compliance, patterns, and systematic analysis.
+
+Provide ONLY valid JSON in this exact format:
+{
+  "patternRecognition": "Detailed pattern analysis text",
+  "consciousnessFramework": "Consciousness and awareness narrative",
+  "impactScope": "individual|multiple|community|systemic|public_safety",
+  "temporalPattern": "single|occasional|frequent|ongoing|escalating",
+  "analyticalSummary": "2-3 sentence core pattern summary"
+}`;
+
+                const response = await callClaude(analysisPrompt);
+                const cleanedResponse = response.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+                const analysis = JSON.parse(cleanedResponse);
+
+                // Fill in the fields
+                document.getElementById('patternAnalysis').value = analysis.patternRecognition;
+                document.getElementById('consciousnessFramework').value = analysis.consciousnessFramework;
+                document.getElementById('analyticalSummary').value = analysis.analyticalSummary;
+                
+                // Set the dropdowns
+                if (analysis.impactScope) {
+                    document.getElementById('impactScope').value = analysis.impactScope;
+                }
+                if (analysis.temporalPattern) {
+                    document.getElementById('temporalPattern').value = analysis.temporalPattern;
+                }
+
+                // Add visual indicator
+                document.getElementById('patternAnalysis').style.borderColor = '#8b5cf6';
+                document.getElementById('consciousnessFramework').style.borderColor = '#8b5cf6';
+                document.getElementById('analyticalSummary').style.borderColor = '#8b5cf6';
+
+                // Restore button
+                button.innerHTML = originalText;
+                button.disabled = false;
+
+                alert('✅ Pattern analysis generated successfully!\n\n🤖 AI has analyzed your description and generated:\n- Pattern Recognition\n- Consciousness Framework\n- Impact & Temporal Analysis\n- Analytical Summary\n\nReview and edit as needed before generating your compliance notice.');
+
+            } catch (error) {
+                console.error('Pattern generation error:', error);
+                alert('❌ Error generating pattern analysis: ' + error.message);
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }
+        });
+
+        // Handle file uploads
+        document.getElementById('fileUpload').addEventListener('change', handleFileUpload);
+        document.getElementById('cameraInput').addEventListener('change', handleFileUpload);
+
+        function handleFileUpload(event) {
+            const files = Array.from(event.target.files);
+            files.forEach(file => {
+                uploadedFiles.push(file);
+                displayUploadedFile(file);
+            });
+        }
+
+        function displayUploadedFile(file) {
+            const container = document.getElementById('uploadedFiles');
+            const fileDiv = document.createElement('div');
+            fileDiv.style.cssText = 'display: flex; align-items: center; gap: 10px; padding: 10px; background: white; border: 1px solid #e2e8f0; border-radius: 6px; margin-bottom: 8px;';
+            
+            const fileIcon = file.type.startsWith('image/') ? '🖼️' : '📄';
+            const fileSize = (file.size / 1024).toFixed(1) + ' KB';
+            
+            fileDiv.innerHTML = `
+                <span style="font-size: 1.5em;">${fileIcon}</span>
+                <div style="flex: 1;">
+                    <strong>${file.name}</strong><br>
+                    <small style="color: #64748b;">${fileSize}</small>
+                </div>
+                <button onclick="removeFile('${file.name}')" style="background: #ef4444; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Remove</button>
+            `;
+            
+            container.appendChild(fileDiv);
+        }
+
+        function removeFile(fileName) {
+            uploadedFiles = uploadedFiles.filter(f => f.name !== fileName);
+            const container = document.getElementById('uploadedFiles');
+            container.innerHTML = '';
+            uploadedFiles.forEach(file => displayUploadedFile(file));
+        }
+
+        // Copy specific compliance notice to clipboard
+        window.copyCompliance = function(type) {
+            const compliance notice = window.currentCompliances[type];
+            if (compliance) {
+                navigator.clipboard.writeText(compliance);
+                alert(`✅ ${type === 'government' ? 'Government agency' : type === 'business' ? 'Business' : 'Law enforcement'} compliance notice copied to clipboard!`);
+            }
+        };
+
+        // Download specific compliance notice
+        window.downloadCompliance = function(type, entityName) {
+            const compliance notice = window.currentCompliances[type];
+            if (compliance) {
+                const blob = new Blob([compliance], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `compliance_notice_${type}_${entityName}_${new Date().toISOString().split('T')[0]}.txt`;
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+        };
+
+        // Download all compliance notices
+        window.downloadAllCompliances = function() {
+            // Download them as separate files
+            if (window.currentCompliances.government) {
+                downloadCompliance('government', window.currentEntityName || 'Agency');
+            }
+            if (window.currentCompliances.business) {
+                setTimeout(() => {
+                    downloadCompliance('business', window.currentBusinessName || 'Business');
+                }, 500);
+            }
+            if (window.currentCompliances.legal) {
+                setTimeout(() => {
+                    downloadCompliance('legal', window.currentLegalEntityName || 'Legal_Entity');
+                }, 1000);
+            }
+            alert('📦 Downloading all compliance notices as separate files...');
+        };
+
+        // Download all as PDF
+        window.downloadAsPDF = function() {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'letter'
+                });
+
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
+                const margin = 20;
+                const maxLineWidth = pageWidth - (margin * 2);
+                let yPosition = margin;
+
+                // Helper function to add text with word wrapping
+                function addText(text, fontSize = 11, isBold = false) {
+                    doc.setFontSize(fontSize);
+                    if (isBold) doc.setFont(undefined, 'bold');
+                    else doc.setFont(undefined, 'normal');
+                    
+                    const lines = doc.splitTextToSize(text, maxLineWidth);
+                    lines.forEach(line => {
+                        if (yPosition > pageHeight - margin) {
+                            doc.addPage();
+                            yPosition = margin;
+                        }
+                        doc.text(line, margin, yPosition);
+                        yPosition += fontSize * 0.5;
+                    });
+                    yPosition += 5;
+                }
+
+                // Add title
+                doc.setFontSize(16);
+                doc.setFont(undefined, 'bold');
+                doc.text('COMPLIANCE NOTICE PACKAGE', pageWidth / 2, yPosition, { align: 'center' });
+                yPosition += 10;
+
+                doc.setFontSize(10);
+                doc.setFont(undefined, 'normal');
+                doc.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth / 2, yPosition, { align: 'center' });
+                yPosition += 15;
+
+                // Add each compliance notice
+                if (window.currentCompliances.government) {
+                    doc.setFontSize(14);
+                    doc.setFont(undefined, 'bold');
+                    doc.text('COMPLIANCE NOTICE FOR GOVERNMENT AGENCIES', margin, yPosition);
+                    yPosition += 10;
+                    
+                    doc.setDrawColor(59, 130, 246);
+                    doc.line(margin, yPosition, pageWidth - margin, yPosition);
+                    yPosition += 10;
+                    
+                    addText(window.currentCompliances.government);
+                    
+                    if (window.currentCompliances.business || window.currentCompliances.legal) {
+                        doc.addPage();
+                        yPosition = margin;
+                    }
+                }
+
+                if (window.currentCompliances.business) {
+                    doc.setFontSize(14);
+                    doc.setFont(undefined, 'bold');
+                    doc.text('COMPLIANCE NOTICE FOR BUSINESS/CORPORATION', margin, yPosition);
+                    yPosition += 10;
+                    
+                    doc.setDrawColor(16, 185, 129);
+                    doc.line(margin, yPosition, pageWidth - margin, yPosition);
+                    yPosition += 10;
+                    
+                    addText(window.currentCompliances.business);
+                    
+                    if (window.currentCompliances.legal) {
+                        doc.addPage();
+                        yPosition = margin;
+                    }
+                }
+
+                if (window.currentCompliances.legal) {
+                    doc.setFontSize(14);
+                    doc.setFont(undefined, 'bold');
+                    doc.text('COMPLIANCE NOTICE FOR LAW ENFORCEMENT/JUDICIAL ENTITY', margin, yPosition);
+                    yPosition += 10;
+                    
+                    doc.setDrawColor(217, 119, 6);
+                    doc.line(margin, yPosition, pageWidth - margin, yPosition);
+                    yPosition += 10;
+                    
+                    addText(window.currentCompliances.legal);
+                }
+
+                // Save the PDF
+                const entityName = window.currentEntityName || 'Entity';
+                doc.save(`Compliance_Notice_Package_${entityName}_${new Date().toISOString().split('T')[0]}.pdf`);
+                
+                alert('✅ PDF generated successfully! Ready for printing or mailing.');
+            } catch (error) {
+                console.error('PDF generation error:', error);
+                alert('Error generating PDF: ' + error.message + '\n\nPlease try downloading as text files instead.');
+            }
+        };
+
+        // Render compliance notice type cards
+        const typesContainer = document.getElementById('complianceTypes');
+        complianceTypes.forEach(type => {
+            const card = document.createElement('div');
+            card.className = 'compliance-type-card';
+            card.innerHTML = `
+                <strong>${type.label}</strong>
+                <div style="font-size: 0.85em; color: #64748b; margin-top: 5px;">
+                    ${type.agencies.join(', ')}
+                </div>
+            `;
+            card.onclick = () => {
+                document.querySelectorAll('.compliance-type-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                selectedComplianceType = type.value;
+            };
+            typesContainer.appendChild(card);
+        });
+
+        // AI-powered compliance notice generation with Claude
+        async function callClaude(prompt) {
+            try {
+                console.log('🤖 Calling Claude API...');
+                const response = await fetch("https://api.anthropic.com/v1/messages", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        model: "claude-sonnet-4-20250514",
+                        max_tokens: 4000,
+                        messages: [
+                            { role: "user", content: prompt }
+                        ]
+                    })
+                });
+
+                console.log('📡 Response status:', response.status);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('❌ API Error:', errorText);
+                    throw new Error(`API request failed (${response.status}): ${errorText.substring(0, 100)}`);
+                }
+
+                const data = await response.json();
+                console.log('✅ Claude response received');
+                return data.content[0].text;
+            } catch (error) {
+                console.error("❌ Error calling Claude:", error);
+                throw error;
+            }
+        }
+
+        // Test AI Connection Button
+        document.getElementById('testConnectionBtn').onclick = async function() {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.style.display = 'block';
+            statusDiv.style.background = '#eff6ff';
+            statusDiv.style.border = '2px solid #3b82f6';
+            statusDiv.style.color = '#1e40af';
+            statusDiv.innerHTML = '<strong>🔌 Testing AI Connection...</strong><br>Sending test request to Claude API...';
+            
+            try {
+                const testPrompt = 'Respond with exactly: "Connection successful"';
+                console.log('🧪 Testing Claude API connection...');
+                const response = await callClaude(testPrompt);
+                
+                statusDiv.style.background = '#f0fdf4';
+                statusDiv.style.border = '2px solid #10b981';
+                statusDiv.style.color = '#065f46';
+                statusDiv.innerHTML = `
+                    <strong>✅ AI Connection Successful!</strong><br>
+                    <div style="background: white; padding: 10px; border-radius: 4px; margin-top: 10px;">
+                        <strong>Test Response:</strong> ${response.substring(0, 100)}<br><br>
+                        <strong>Status:</strong> Claude API is working correctly<br>
+                        <strong>Laws Loaded:</strong> ✓ All 8 compliance types loaded<br>
+                        <strong>Ready:</strong> You can now generate compliance notices!
+                    </div>
+                `;
+                console.log('✅ Connection test successful:', response);
+            } catch (error) {
+                statusDiv.style.background = '#fee2e2';
+                statusDiv.style.border = '2px solid #ef4444';
+                statusDiv.style.color = '#991b1b';
+                statusDiv.innerHTML = `
+                    <strong>❌ Connection Test Failed</strong><br>
+                    <div style="background: white; padding: 10px; border-radius: 4px; margin-top: 10px; font-family: monospace; font-size: 0.85em;">
+                        <strong>Error:</strong> ${error.message}<br><br>
+                        <strong>Possible Issues:</strong><br>
+                        • This artifact may need to be in claude.ai to access the API<br>
+                        • Network connection issue<br>
+                        • API temporarily unavailable<br><br>
+                        <strong>Check Console:</strong> Press F12 and look at Console tab for details
+                    </div>
+                `;
+                console.error('❌ Connection test failed:', error);
+            }
+        };
+
+        // Preview Compliance Details Button
+        document.getElementById('previewBtn').onclick = function() {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.style.display = 'block';
+            statusDiv.style.background = '#eff6ff';
+            statusDiv.style.border = '2px solid #3b82f6';
+            statusDiv.style.color = '#1e40af';
+            
+            const yourName = document.getElementById('yourName').value || '(Not filled)';
+            const yourEmail = document.getElementById('yourEmail').value || '(Not filled)';
+            const state = document.getElementById('state').value || '(Not selected)';
+            const entityName = document.getElementById('entityName').value || '(Not filled)';
+            const description = document.getElementById('description').value || '(Not filled)';
+            const incidentDate = document.getElementById('incidentDate').value || '(Not filled)';
+            const desiredOutcome = document.getElementById('desiredOutcome').value || '(Not filled)';
+            
+            const selectedType = complianceTypes.find(t => t.value === selectedComplianceType);
+            const typeName = selectedType ? selectedType.label : '(Not selected)';
+            
+            const legalTemplate = legalLanguageTemplates[selectedComplianceType];
+            const lawsList = legalTemplate ? legalTemplate.keyLaws.map(law => `• ${law}`).join('\n') : 'Please select a compliance type first';
+            
+            // Count total laws loaded across all categories
+            const totalCategories = Object.keys(legalLanguageTemplates).length;
+            const totalLaws = Object.values(legalLanguageTemplates).reduce((sum, template) => sum + template.keyLaws.length, 0);
+            
+            statusDiv.innerHTML = `
+                <h3 style="margin-bottom: 15px; color: #1e40af;">📋 Compliance Notice Preview</h3>
+                
+                <div style="background: #dcfce7; border: 2px solid #10b981; padding: 15px; border-radius: 6px; margin-bottom: 15px;">
+                    <h4 style="margin: 0 0 10px 0; color: #065f46;">✅ LEGAL DATABASE STATUS</h4>
+                    <strong>📚 ${totalCategories} Legal Categories Loaded</strong> (${totalLaws} Total Laws)<br>
+                    Categories: Consumer Protection • Employment • Discrimination • Housing • Financial • Healthcare • Environmental • Civil Rights
+                </div>
+                
+                <div style="background: white; padding: 15px; border-radius: 6px; font-family: monospace; font-size: 0.9em;">
+                    <strong>Your Information:</strong><br>
+                    Name: ${yourName}<br>
+                    Email: ${yourEmail}<br>
+                    State: ${state}<br><br>
+                    
+                    <strong>Compliance Type Selected:</strong> ${typeName}<br><br>
+                    
+                    <strong>Against:</strong> ${entityName}<br><br>
+                    
+                    <strong>Incident Date:</strong> ${incidentDate}<br><br>
+                    
+                    <strong>Description:</strong><br>
+                    ${description.substring(0, 200)}${description.length > 200 ? '...' : ''}<br><br>
+                    
+                    <strong>Desired Outcome:</strong><br>
+                    ${desiredOutcome.substring(0, 150)}${desiredOutcome.length > 150 ? '...' : ''}<br><br>
+                    
+                    <strong>Applicable Laws for ${typeName}:</strong><br>
+                    <div style="background: #f0fdf4; padding: 10px; border-radius: 4px; margin-top: 5px; border-left: 4px solid #10b981;">
+                        ${lawsList.replace(/\n/g, '<br>')}
+                    </div>
+                </div>
+                <div style="margin-top: 15px; padding: 15px; background: #fef3c7; border-radius: 6px; border: 2px solid #f59e0b;">
+                    <strong>📊 Pattern Analytics:</strong> ${document.getElementById('patternAnalysis').value ? '✅ Filled' : '⚠️ Not filled (use Auto-Generate button)'}<br>
+                    <strong>🧠 Consciousness Framework:</strong> ${document.getElementById('consciousnessFramework').value ? '✅ Filled' : '⚠️ Optional'}<br>
+                    <strong>🎯 Ready to Generate:</strong> ${(yourName !== '(Not filled)' && yourEmail !== '(Not filled)' && selectedComplianceType && description !== '(Not filled)') ? '✅ YES - Click Generate Button!' : '❌ NO - Fill required fields marked with *'}
+                </div>
+            `;
+            
+            // Scroll to show the user this preview
+            statusDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        };
+
+        // Generate compliance notice with AI
+        document.getElementById('generateBtn').onclick = async () => {
+            const statusDiv = document.getElementById('statusMessage');
+            
+            // Show initial status
+            statusDiv.style.display = 'block';
+            statusDiv.style.background = '#eff6ff';
+            statusDiv.style.border = '2px solid #3b82f6';
+            statusDiv.style.color = '#1e40af';
+            statusDiv.innerHTML = '<strong>🔄 Starting compliance notice generation...</strong>';
+            
+            const yourName = document.getElementById('yourName').value;
+            const yourEmail = document.getElementById('yourEmail').value;
+            const replyToEmail = document.getElementById('replyToEmail').value;
+            const yourPhone = document.getElementById('yourPhone').value;
+            const state = document.getElementById('state').value;
+            const entityName = document.getElementById('entityName').value;
+            const entityType = document.getElementById('entityType').value;
+            const incidentDate = document.getElementById('incidentDate').value;
+            const description = document.getElementById('description').value;
+            const evidence = document.getElementById('evidence').value;
+            const desiredOutcome = document.getElementById('desiredOutcome').value;
+            const sendCopyTo = document.getElementById('sendCopyTo').value;
+
+            // Architecture of Consciousness & Pattern Analytics fields
+            const patternAnalysis = document.getElementById('patternAnalysis').value;
+            const consciousnessFramework = document.getElementById('consciousnessFramework').value;
+            const impactScope = document.getElementById('impactScope').value;
+            const temporalPattern = document.getElementById('temporalPattern').value;
+            const priorAttempts = document.getElementById('priorAttempts').value;
+            const analyticalSummary = document.getElementById('analyticalSummary').value;
+
+            // Business/corporation fields
+            const businessName = document.getElementById('businessName').value;
+            const businessLocation = document.getElementById('businessLocation').value;
+            const contactNames = document.getElementById('contactNames').value;
+            const customerService = document.getElementById('customerService').value;
+            const businessDept = document.getElementById('businessDept').value;
+            const businessAddress = document.getElementById('businessAddress').value;
+            const businessEmail = document.getElementById('businessEmail').value;
+            const referenceNumber = document.getElementById('referenceNumber').value;
+            const ccManagers = document.getElementById('ccManagers').value;
+            const corporateOffices = document.getElementById('corporateOffices').value;
+
+            // Law enforcement/judicial fields
+            const legalEntityType = document.getElementById('legalEntityType').value;
+            const legalEntityName = document.getElementById('legalEntityName').value;
+            const badgeOrCaseNumber = document.getElementById('badgeOrCaseNumber').value;
+            const officialName = document.getElementById('officialName').value;
+            const legalDepartment = document.getElementById('legalDepartment').value;
+            const legalAddress = document.getElementById('legalAddress').value;
+
+            // Uploaded files
+            const filesInfo = uploadedFiles.length > 0 
+                ? `\n\nAttached Evidence Files:\n${uploadedFiles.map(f => `- ${f.name} (${(f.size / 1024).toFixed(1)} KB)`).join('\n')}`
+                : '';
+
+            if (!yourName || !yourEmail || !selectedComplianceType || !entityName || !description || !state || !incidentDate || !desiredOutcome) {
+                statusDiv.style.background = '#fee2e2';
+                statusDiv.style.border = '2px solid #ef4444';
+                statusDiv.style.color = '#991b1b';
+                statusDiv.innerHTML = '<strong>❌ Missing Required Fields</strong><br>Please fill in all required fields marked with *';
+                alert('Please fill in all required fields (marked with *)');
+                return;
+            }
+
+            const selectedType = complianceTypes.find(t => t.value === selectedComplianceType);
+            const legalTemplate = legalLanguageTemplates[selectedComplianceType];
+
+            // Update status
+            statusDiv.innerHTML = '<strong>✅ Validation passed</strong><br>📚 Loading legal framework...';
+            
+            // Show loading
+            document.getElementById('loadingSection').style.display = 'block';
+            document.getElementById('agencySection').style.display = 'none';
+            document.getElementById('referenceSection').style.display = 'none';
+            document.getElementById('lawSection').style.display = 'none';
+            document.getElementById('emailSection').style.display = 'none';
+
+            try {
+                // Update status
+                statusDiv.innerHTML = '<strong>🔍 Step 1/3:</strong> Researching applicable laws with AI...<br><small>Analyzing: ' + selectedType.label + ' in ' + state + '</small>';
+                
+                // Step 1: Research relevant laws with AI, using legal templates as foundation
+                const lawResearchPrompt = `You are a legal research assistant. Research and identify the most relevant laws, statutes, and regulations for the following compliance notice.
+
+Compliance Notice Type: ${selectedType.label}
+State: ${state}
+Entity Type: ${entityType}
+Description: ${description}
+
+FOUNDATIONAL LEGAL FRAMEWORK FOR THIS COMPLIANCE TYPE:
+${legalTemplate.keyLaws.map(law => `- ${law}`).join('\n')}
+
+Based on the specific facts of this case and the state of ${state}, identify 3-5 of the MOST relevant laws from the foundation above, and add any additional state-specific laws that apply.
+
+Provide a JSON response with relevant legal references. DO NOT OUTPUT ANYTHING OTHER THAN VALID JSON. Your entire response must be only valid JSON in this exact format:
+
+{
+  "laws": [
+    {
+      "title": "Full name of the law/statute",
+      "citation": "Legal citation (e.g., 15 U.S.C. § 45 or State Code § 123.45)",
+      "relevance": "One sentence explaining how this law applies to this specific case"
+    }
+  ]
+}`;
+
+                const lawResearchResponse = await callClaude(lawResearchPrompt);
+                
+                // Update status
+                statusDiv.innerHTML = '<strong>✅ Step 1/3 Complete:</strong> Found ' + (lawResearchResponse.length > 100 ? 'relevant' : 'applicable') + ' laws<br><strong>🏛️ Step 2/3:</strong> Identifying appropriate government agencies...';
+                
+                // Parse law research results
+                let lawData;
+                try {
+                    const cleanedResponse = lawResearchResponse.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+                    lawData = JSON.parse(cleanedResponse);
+                    lawReferences = lawData.laws || [];
+                } catch (parseError) {
+                    console.error("Error parsing law research:", parseError);
+                    // Fallback to template laws
+                    lawReferences = legalTemplate.keyLaws.slice(0, 3).map(law => {
+                        const parts = law.split(' - ');
+                        return {
+                            title: parts[0].split('(')[0].trim(),
+                            citation: parts[0].match(/\(([^)]+)\)/)?.[1] || 'See statute',
+                            relevance: parts[1] || 'Applicable to this compliance notice type'
+                        };
+                    });
+                }
+
+                // Step 2: Find appropriate agencies with AI
+                const agencyPrompt = `You are a legal expert. Determine the most appropriate government agencies and authorities to file this compliance notice with:
+
+Compliance Notice Type: ${selectedType.label}
+State: ${state}
+Description: ${description}
+
+Consider federal agencies (FTC, EEOC, CFPB, HUD, EPA, etc.), state agencies (Attorney General, Labor Board, Consumer Protection, etc.), and other relevant authorities.
+
+Provide a JSON response with PRIMARY recommended agencies AND additional reference agencies. DO NOT OUTPUT ANYTHING OTHER THAN VALID JSON. Your entire response must be only valid JSON in this exact format:
+
+{
+  "primary_agencies": [
+    {
+      "name": "Agency name",
+      "type": "federal or state",
+      "reasoning": "One sentence why this agency is appropriate"
+    }
+  ],
+  "reference_agencies": [
+    {
+      "name": "Agency name",
+      "type": "federal, state, or other",
+      "description": "Brief description of what this agency handles",
+      "website": "Official website URL if known, or 'N/A'"
+    }
+  ]
+}`;
+
+                const agencyResponse = await callClaude(agencyPrompt);
+                
+                // Update status
+                statusDiv.innerHTML = '<strong>✅ Step 2/3 Complete:</strong> Agencies identified<br><strong>📝 Step 3/3:</strong> Generating compliance notices with legal language...';
+                
+                // Parse agency results
+                let agencyData;
+                try {
+                    const cleanedAgencyResponse = agencyResponse.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+                    agencyData = JSON.parse(cleanedAgencyResponse);
+                    agencyInfo = {
+                        type: selectedType.label,
+                        agencies: agencyData.primary_agencies || selectedType.agencies.map(a => ({ name: a, type: 'recommended', reasoning: 'Standard agency for this compliance notice type' })),
+                        referenceAgencies: agencyData.reference_agencies || []
+                    };
+                } catch (parseError) {
+                    console.error("Error parsing agency research:", parseError);
+                    agencyInfo = {
+                        type: selectedType.label,
+                        agencies: selectedType.agencies.map(a => ({ name: a, type: 'recommended', reasoning: 'Standard agency for this compliance notice type' })),
+                        referenceAgencies: []
+                    };
+                }
+
+                // Step 3: Generate multiple professional compliance notice letters with AI
+                const businessInfo = businessName ? `
+
+PRIVATE BUSINESS/CORPORATION INFORMATION:
+Business Name: ${businessName}
+${businessLocation ? `Specific Location/Branch: ${businessLocation}` : ''}
+${contactNames ? `Contact Names: ${contactNames}` : ''}
+Customer Service: ${customerService || 'N/A'}
+Department: ${businessDept || 'N/A'}
+Business Address: ${businessAddress || 'N/A'}
+Business Email: ${businessEmail || 'N/A'}
+Reference/Account Number: ${referenceNumber || 'N/A'}
+${ccManagers ? `\nCC: MANAGERS/SUPERVISORS:\n${ccManagers}` : ''}
+${corporateOffices ? `\nCORPORATE OFFICE CONTACTS:\n${corporateOffices}` : ''}` : '';
+
+                // Generate letter for GOVERNMENT AGENCIES
+                const governmentCompliancePrompt = `You are a legal professional drafting a formal COMPLIANCE NOTICE TO GOVERNMENT AGENCIES. This is not just a compliance notice - it's a systematic notice demonstrating pattern recognition and consciousness of process. Generate a professional, legally-sound compliance notice based on the following information:
+
+COMPLAINANT INFORMATION:
+Name: ${yourName}
+Email: ${yourEmail}
+${replyToEmail ? `Reply To Email: ${replyToEmail}` : ''}
+Phone: ${yourPhone}
+State: ${state}
+
+RESPONDENT INFORMATION:
+Entity Name: ${entityName}
+Entity Type: ${entityType}
+
+COMPLIANCE ISSUE DETAILS:
+Type: ${selectedType.label}
+Date of Incident: ${incidentDate}
+Description: ${description}
+Evidence: ${evidence || 'To be provided upon request'}${filesInfo}
+Desired Outcome: ${desiredOutcome}
+${sendCopyTo ? `
+
+COPIES TO BE SENT TO (CC):
+${sendCopyTo}` : ''}
+
+ARCHITECTURE OF CONSCIOUSNESS & PATTERN ANALYSIS:
+${patternAnalysis ? `Pattern Recognition: ${patternAnalysis}` : ''}
+${consciousnessFramework ? `Consciousness Framework: ${consciousnessFramework}` : ''}
+${impactScope ? `Impact Scope: ${impactScope}` : ''}
+${temporalPattern ? `Temporal Pattern: ${temporalPattern}` : ''}
+${priorAttempts ? `Prior Resolution Attempts: ${priorAttempts}` : ''}
+${analyticalSummary ? `Analytical Summary: ${analyticalSummary}` : ''}
+
+LEGAL BASIS - USE THIS OPENING STATEMENT:
+"${legalTemplate.opening}"
+
+LEGAL REFERENCES TO CITE:
+${lawReferences.map(law => `- ${law.title} (${law.citation}): ${law.relevance}`).join('\n')}
+
+TYPICAL REMEDY FOR THIS TYPE: ${legalTemplate.remedy}
+
+AGENCIES THIS WILL BE SENT TO:
+${agencyInfo.agencies.slice(0, 3).map(a => `- ${typeof a === 'string' ? a : a.name}`).join('\n')}
+
+Generate a formal COMPLIANCE NOTICE TO GOVERNMENT AGENCIES that:
+1. Is addressed to "To: [Appropriate Government Agency]"
+2. Uses the legal opening statement provided above
+3. Incorporates pattern analysis to show systematic issues (if provided)
+4. Demonstrates awareness and good faith through consciousness framework (if provided)
+5. Clearly states the facts without emotion
+6. Properly cites the relevant laws
+7. Uses formal legal language appropriate for government agencies
+8. Includes a declaration under penalty of perjury
+9. Requests investigation and appropriate remedy
+10. If pattern analysis is provided, emphasize the systematic nature of violations
+${sendCopyTo ? '11. Includes a "CC:" section at the end listing all parties receiving copies' : ''}
+
+CRITICAL: This is a COMPLIANCE NOTICE, not just a complaint. Frame it as systematic documentation of non-compliance with applicable laws and regulations.
+
+Output ONLY the compliance notice text. Do not include any preamble.`;
+
+                const governmentCompliance Notice = await callClaude(governmentCompliancePrompt);
+                
+                let businessCompliance Notice = null;
+                
+                // Generate separate letter for BUSINESS/CORPORATION if provided
+                if (businessName) {
+                    const businessCompliancePrompt = `You are a legal professional drafting a formal compliance notice TO A PRIVATE BUSINESS/CORPORATION. Generate a professional compliance notice letter based on the following information:
+
+COMPLAINANT INFORMATION:
+Name: ${yourName}
+Email: ${yourEmail}
+${replyToEmail ? `Reply To Email: ${replyToEmail}` : ''}
+Phone: ${yourPhone}
+State: ${state}
+${businessInfo}
+
+COMPLIANCE NOTICE DETAILS:
+Type: ${selectedType.label}
+Date of Incident: ${incidentDate}
+Description: ${description}
+Evidence: ${evidence || 'To be provided upon request'}${filesInfo}
+Desired Outcome: ${desiredOutcome}
+${sendCopyTo ? `
+
+COPIES TO BE SENT TO (CC):
+${sendCopyTo}` : ''}
+
+LEGAL BASIS:
+${lawReferences.map(law => `- ${law.title} (${law.citation})`).join('\n')}
+
+Generate a formal compliance notice letter TO THE BUSINESS/CORPORATION that:
+1. Is addressed directly to "${businessName}"${businessLocation ? ` - ${businessLocation}` : ''}
+${businessDept ? `2. Attention: ${businessDept}` : ''}
+2. Uses firm but professional business language (less formal than government letter)
+3. Clearly references account/reference number if provided
+${contactNames ? '4. References specific contact names/individuals involved' : ''}
+4. States that this matter has also been reported to appropriate government agencies
+5. Requests prompt resolution within 30 days
+6. References applicable consumer protection laws
+7. Warns of potential escalation if not resolved
+${sendCopyTo ? '8. Includes a "CC:" section at the end listing all parties receiving copies' : ''}
+${ccManagers ? '9. Includes managers/supervisors in the CC section' : ''}
+${corporateOffices ? '10. Includes corporate office contacts in the CC section' : ''}
+
+IMPORTANT: If managers or corporate offices are provided, make sure they appear in the CC section at the end of the letter to increase accountability.
+
+Output ONLY the compliance notice letter text. Do not include any preamble.`;
+
+                    businessCompliance Notice = await callClaude(businessCompliancePrompt);
+                }
+
+                let legalCompliance Notice = null;
+                
+                // Generate separate letter for LAW ENFORCEMENT/JUDICIAL ENTITY if provided
+                if (legalEntityName) {
+                    const legalInfo = `
+
+LAW ENFORCEMENT/JUDICIAL ENTITY INFORMATION:
+Entity Type: ${legalEntityType || 'N/A'}
+Agency/Court Name: ${legalEntityName}
+Badge/Case/Docket Number: ${badgeOrCaseNumber || 'N/A'}
+Officer/Judge Name: ${officialName || 'N/A'}
+Department/Division: ${legalDepartment || 'N/A'}
+Address: ${legalAddress || 'N/A'}`;
+
+                    const legalCompliancePrompt = `You are a legal professional drafting a formal compliance notice TO LAW ENFORCEMENT, JUDICIAL OFFICIALS, OR COURT ACTORS. Generate a highly professional, legally-sound compliance notice letter based on the following information:
+
+COMPLAINANT INFORMATION:
+Name: ${yourName}
+Email: ${yourEmail}
+${replyToEmail ? `Reply To Email: ${replyToEmail}` : ''}
+Phone: ${yourPhone}
+State: ${state}
+${legalInfo}
+
+COMPLIANCE NOTICE DETAILS:
+Type: ${selectedType.label}
+Date of Incident: ${incidentDate}
+Description: ${description}
+Evidence: ${evidence || 'To be provided upon request'}${filesInfo}
+Desired Outcome: ${desiredOutcome}
+${sendCopyTo ? `
+
+COPIES TO BE SENT TO (CC):
+${sendCopyTo}` : ''}
+
+LEGAL BASIS:
+${lawReferences.map(law => `- ${law.title} (${law.citation}): ${law.relevance}`).join('\n')}
+
+Generate a formal compliance notice letter TO LAW ENFORCEMENT/JUDICIAL ENTITY that:
+1. Is addressed to "${legalEntityName}" with appropriate formality
+2. Uses extremely formal legal language appropriate for law enforcement/judicial compliance notices
+3. References badge numbers, case numbers, or docket numbers clearly
+4. Cites 42 U.S.C. § 1983 and applicable civil rights statutes if relevant
+5. States that copies have been sent to appropriate oversight agencies (Internal Affairs, Judicial Conduct Commission, etc.)
+6. Maintains respectful but firm tone regarding constitutional and legal rights
+7. Requests formal investigation and corrective action
+8. Includes declaration under penalty of perjury
+9. References right to file compliance notices under relevant laws
+${sendCopyTo ? '10. Includes a "CC:" section at the end listing all parties receiving copies' : ''}
+
+IMPORTANT: This is a compliance notice about law enforcement/judicial conduct. Use appropriate legal terminology and cite relevant oversight mechanisms.
+
+Output ONLY the compliance notice letter text. Do not include any preamble.`;
+
+                    legalCompliance Notice = await callClaude(legalCompliancePrompt);
+                }
+
+                // Store all compliance notices
+                const allCompliances = {
+                    government: governmentCompliance,
+                    business: businessCompliance,
+                    legal: legalCompliance
+                };
+                
+                generatedCompliance Notice = governmentCompliance; // For backward compatibility
+
+                // Hide loading
+                document.getElementById('loadingSection').style.display = 'none';
+
+                // Show agency info
+                let agencyHTML = `
+                    <p><strong>Compliance Notice Type:</strong> ${agencyInfo.type}</p>
+                    <p><strong>Recommended Filing Agencies:</strong></p>
+                    <ul>`;
+                
+                agencyInfo.agencies.forEach((agency, idx) => {
+                    if (typeof agency === 'string') {
+                        agencyHTML += `<li>${agency} ${idx === 0 ? '(Recommended)' : ''}</li>`;
+                    } else {
+                        agencyHTML += `<li><strong>${agency.name}</strong> (${agency.type})<br><small>${agency.reasoning}</small></li>`;
+                    }
+                });
+                
+                agencyHTML += '</ul>';
+                document.getElementById('agencyContent').innerHTML = agencyHTML;
+                document.getElementById('agencySection').style.display = 'block';
+
+                // Show reference agencies if available
+                if (agencyInfo.referenceAgencies && agencyInfo.referenceAgencies.length > 0) {
+                    let referenceHTML = '<ul>';
+                    agencyInfo.referenceAgencies.forEach(agency => {
+                        referenceHTML += `
+                            <li style="margin-bottom: 10px;">
+                                <strong>${agency.name}</strong> (${agency.type})<br>
+                                <small>${agency.description}</small>
+                                ${agency.website && agency.website !== 'N/A' ? `<br><small>🔗 <a href="${agency.website}" target="_blank" style="color: #3b82f6;">${agency.website}</a></small>` : ''}
+                            </li>`;
+                    });
+                    referenceHTML += '</ul>';
+                    document.getElementById('referenceContent').innerHTML = referenceHTML;
+                    document.getElementById('referenceSection').style.display = 'block';
+                }
+
+                // Show law references
+                document.getElementById('lawContent').innerHTML = lawReferences.map(law => `
+                    <div class="law-item">
+                        <strong>${law.title}</strong><br>
+                        <em>${law.citation}</em><br>
+                        <small>${law.relevance}</small>
+                    </div>
+                `).join('');
+                document.getElementById('lawSection').style.display = 'block';
+
+                // Show generated compliance notices (multiple)
+                let compliancesHTML = '';
+                
+                // Government agency compliance notice
+                compliancesHTML += `
+                    <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                        <h4 style="color: #1e40af; margin-bottom: 10px;">
+                            🏛️ Compliance Notice for Government Agencies
+                        </h4>
+                        <p style="color: #64748b; margin-bottom: 15px;">
+                            Send this version to: ${agencyInfo.agencies.slice(0, 3).map(a => typeof a === 'string' ? a : a.name).join(', ')}
+                        </p>
+                        <div class="generated-email" style="background: white;">${allCompliances.government}</div>
+                        <div style="margin-top: 15px;">
+                            <button class="btn" onclick="copyCompliance('government')" style="margin-right: 10px;">
+                                📋 Copy Government Notice
+                            </button>
+                            <button class="btn btn-secondary" onclick="downloadCompliance('government', 'Government_Agency')">
+                                💾 Download as TXT
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                // Business compliance notice if provided
+                if (allCompliances.business) {
+                    let businessDetails = businessName;
+                    if (businessLocation) businessDetails += ` - ${businessLocation}`;
+                    if (businessEmail) businessDetails += ` (${businessEmail})`;
+                    if (customerService) businessDetails += ` - Customer Service: ${customerService}`;
+                    
+                    let ccDetails = '';
+                    if (ccManagers || corporateOffices) {
+                        ccDetails = '<br><small style="color: #059669;">Copying: ';
+                        const ccList = [];
+                        if (ccManagers) ccList.push('Managers/Supervisors');
+                        if (corporateOffices) ccList.push('Corporate Office');
+                        ccDetails += ccList.join(', ') + '</small>';
+                    }
+                    
+                    compliancesHTML += `
+                        <div style="background: #f0fdf4; border: 2px solid #10b981; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                            <h4 style="color: #065f46; margin-bottom: 10px;">
+                                🏢 Compliance Notice for Business/Corporation
+                            </h4>
+                            <p style="color: #64748b; margin-bottom: 15px;">
+                                Send this version to: ${businessDetails}${ccDetails}
+                            </p>
+                            <div class="generated-email" style="background: white;">${allCompliances.business}</div>
+                            <div style="margin-top: 15px;">
+                                <button class="btn" onclick="copyCompliance('business')" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); margin-right: 10px;">
+                                    📋 Copy Business Notice
+                                </button>
+                                <button class="btn btn-secondary" onclick="downloadCompliance('business', '${businessName.replace(/[^a-zA-Z0-9]/g, '_')}')">
+                                    💾 Download as TXT
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Legal/Law Enforcement compliance notice if provided
+                if (allCompliances.legal) {
+                    compliancesHTML += `
+                        <div style="background: #fef3c7; border: 2px solid #d97706; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                            <h4 style="color: #92400e; margin-bottom: 10px;">
+                                ⚖️ Compliance Notice for Law Enforcement/Judicial Entity
+                            </h4>
+                            <p style="color: #64748b; margin-bottom: 15px;">
+                                Send this version to: ${legalEntityName}${officialName ? ` - Attn: ${officialName}` : ''}${badgeOrCaseNumber ? ` (${badgeOrCaseNumber})` : ''}
+                            </p>
+                            <div class="generated-email" style="background: white;">${allCompliances.legal}</div>
+                            <div style="margin-top: 15px;">
+                                <button class="btn" onclick="copyCompliance('legal')" style="background: linear-gradient(135deg, #d97706 0%, #b45309 100%); margin-right: 10px;">
+                                    📋 Copy Legal Notice
+                                </button>
+                                <button class="btn btn-secondary" onclick="downloadCompliance('legal', '${legalEntityName.replace(/[^a-zA-Z0-9]/g, '_')}')">
+                                    💾 Download as TXT
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Add download all button
+                compliancesHTML += `
+                    <div style="text-align: center; padding: 20px; background: #f8fafc; border-radius: 8px;">
+                        <button class="btn" onclick="downloadAllCompliances()" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); font-size: 1.1em; margin-right: 10px;">
+                            📦 Download All as Separate Files
+                        </button>
+                        <button class="btn" onclick="downloadAsPDF()" style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); font-size: 1.1em;">
+                            📄 Download Complete PDF for Print/Mail
+                        </button>
+                    </div>
+                `;
+                
+                document.getElementById('generatedEmailsContainer').innerHTML = compliancesHTML;
+                document.getElementById('emailSection').style.display = 'block';
+                
+                // Store compliance notices globally for copy/download functions
+                window.currentCompliances = allCompliances;
+                window.currentEntityName = entityName;
+                window.currentBusinessName = businessName;
+                window.currentLegalEntityName = legalEntityName;
+
+                // Save compliance notice to history
+                saveCompliance({
+                    yourName,
+                    yourEmail,
+                    replyToEmail,
+                    yourPhone,
+                    state,
+                    complianceType: selectedComplianceType,
+                    complianceTypeLabel: selectedType.label,
+                    entityName,
+                    entityType,
+                    incidentDate,
+                    description,
+                    evidence,
+                    desiredOutcome,
+                    sendCopyTo,
+                    businessName,
+                    businessLocation,
+                    contactNames,
+                    customerService,
+                    businessDept,
+                    businessAddress,
+                    businessEmail,
+                    referenceNumber,
+                    ccManagers,
+                    corporateOffices,
+                    legalEntityType,
+                    legalEntityName,
+                    badgeOrCaseNumber,
+                    officialName,
+                    legalDepartment,
+                    legalAddress,
+                    patternAnalysis,
+                    consciousnessFramework,
+                    impactScope,
+                    temporalPattern,
+                    priorAttempts,
+                    analyticalSummary,
+                    filesCount: uploadedFiles.length,
+                    generatedCompliance: allCompliances.government,
+                    businessCompliance: allCompliances.business,
+                    legalCompliance: allCompliances.legal,
+                    lawReferences,
+                    agencies: agencyInfo.agencies
+                });
+
+                // Show success message
+                statusDiv.style.background = '#f0fdf4';
+                statusDiv.style.border = '2px solid #10b981';
+                statusDiv.style.color = '#065f46';
+                statusDiv.innerHTML = '<strong>✅ SUCCESS!</strong> Compliance notices generated and saved to history!<br><small>Scroll down to view your notices</small>';
+                
+                alert('✅ Compliance notices generated successfully and saved to your history!');
+
+            } catch (error) {
+                console.error('Compliance generation error:', error);
+                const statusDiv = document.getElementById('statusMessage');
+                statusDiv.style.display = 'block';
+                statusDiv.style.background = '#fee2e2';
+                statusDiv.style.border = '2px solid #ef4444';
+                statusDiv.style.color = '#991b1b';
+                statusDiv.innerHTML = `
+                    <strong>❌ Error Generating Compliance Notice</strong><br>
+                    <div style="background: white; padding: 10px; border-radius: 4px; margin-top: 10px; font-family: monospace; font-size: 0.85em;">
+                        <strong>Error Details:</strong><br>
+                        ${error.message || 'Unknown error'}<br><br>
+                        <strong>Troubleshooting:</strong><br>
+                        • Check your internet connection<br>
+                        • Verify all required fields are filled<br>
+                        • Try refreshing the page<br>
+                        • Check browser console (F12) for details
+                    </div>
+                `;
+                alert('Error generating compliance notice: ' + error.message + '\n\nSee status area for details and troubleshooting tips.');
+                document.getElementById('loadingSection').style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>
